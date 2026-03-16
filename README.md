@@ -1,1 +1,15 @@
-# world-tension-meter
+# World Tension Meter
+
+## Abstract
+V dnešním světě plném personalizovaných algoritmů a informačních bublin je stále těžší získat objektivní přehled o skutečném stavu společnosti. Realita vnímaná přes obrazovky často neodpovídá skutečnosti a negativita na internetu je všudypřítomná. Tento projekt má za cíl vytvořit "měřič globální tenze", který kvantifikuje a vizualizuje aktuální emocionální stav internetu v porovnání s historickými daty. Systém agreguje titulky z předních světových zpravodajských kanálů a trendující příspěvky ze sociálních sítí, které následně pomocí umělé inteligence analyzuje a umisťuje na škálu pozitivních a negativních emocí. Výsledkem je interaktivní platforma obsahující časovou osu globální tenze a teplotní mapu světa, kde barva každého státu v reálném čase reflektuje momentální sentiment zpráv, které se k němu vážou.
+
+## Minimum Viable Product (MVP) & Technické řešení
+Cílem MVP je vytvořit funkční end-to-end pipeline v co nejčistší podobě bez složité distribuované infrastruktury. Řešení bude stát na jednoduchém backendu (např. Python s FastAPI), který bude v pravidelných intervalech stahovat data z veřejných RSS feedů 3-5 hlavních zpravodajských agentur (BBC, Reuters, Al Jazeera). Texty projdou lehkou NLP analýzou pomocí předtrénovaného open-source modelu (např. VADER nebo základní model z HuggingFace), který každému titulku přiřadí sentimentální skóre od -1 (negativní) do 1 (pozitivní). Výsledky se spolu s časovým razítkem uloží do time-series databáze (InfluxDB) nebo relační databáze (PostgreSQL). Systém bude vystavovat jednoduché REST API, které bude agregovaná data posílat do primitivního frontendu vykreslujícího základní čárový graf vývoje tenze v čase. Pro MVP se zeměpisná příslušnost zpráv bude určovat pouze hrubým klíčovým slovem (např. výskyt slova "Ukraine" v textu).
+
+## Možná rozšíření a škálování architektury
+* **Přechod na event-driven distribuovaný systém:** Implementace message brokerů (Apache Kafka nebo RabbitMQ) pro oddělení scraperů od analytického enginu, což umožní masivní paralelní zpracování dat ze stovek zdrojů najednou.
+* **Integrace sociálních sítí a obcházení anti-bot ochran:** Zapojení asynchronních workerů a headless prohlížečů s rotací proxy serverů pro sběr surových dat z platforem jako X (Twitter), Reddit nebo Telegram.
+* **Pokročilé AI a Vektorové vyhledávání:** Nahrazení základní analýzy fine-tunovaným LLM modelem pro hluboké porozumění kontextu a nasazení vektorové databáze (Milvus/Qdrant) pro deduplikaci zpráv o stejné události od různých vydavatelů.
+* **Entity Extraction & Geo-tagging:** Implementace sofistikované pipeline pro rozpoznávání pojmenovaných entit (NER), která přesně určí, kterého státu se událost týká, nezávisle na použitém jazyce článku.
+* **Real-time streaming:** Nasazení WebSocketů pro okamžité propisování nových událostí a změn sentimentu do interaktivní frontendové mapy bez nutnosti obnovovat stránku.
+* **Modul pro backfilling historických dat:** Vytvoření samostatné pipeline pro jednorázový import a analýzu veřejných datasetů a internetových archivů za uplynulé roky pro vytvoření spolehlivé historické "baseline" tenze.
